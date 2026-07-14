@@ -1,0 +1,22 @@
+codexion/
+├── Makefile
+├── README.md
+├── includes/
+│   └── codexion.h
+├── src/
+│   ├── main.c
+│   ├── parsing.c
+│   ├── validation.c
+│   ├── init.c
+│   ├── simulation.c
+│   ├── coder.c
+│   ├── monitor.c
+│   ├── dongle.c
+│   ├── scheduler.c
+│   ├── heap.c
+│   ├── logging.c
+│   ├── time.c
+│   ├── cleanup.c
+│   └── utils.c
+└── tests/
+    └── README.md

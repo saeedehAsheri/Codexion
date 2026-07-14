@@ -1,0 +1,16 @@
+pthread_create
+pthread_join
+pthread_mutex_*
+pthread_cond_*
+gettimeofday
+clock_gettime
+usleep
+malloc/free
+printf
+write
+strcmp
+strlen
+atoi
+memset
+
+و
