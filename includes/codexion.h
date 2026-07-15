@@ -4,6 +4,11 @@
 # include <limits.h>
 # include <stdio.h>
 # include <string.h>
+#include <stdlib.h>
+/*lib for having different running path in the program using threads*/
+# include <pthread.h>
+
+typedef struct s_dongle	t_dongle;
 
 typedef enum e_scheduler
 {
@@ -28,6 +33,8 @@ typedef struct s_coder
 	int		id;
 	int		compile_count;
 	long	last_compile_start;
+	t_dongle *left;
+	t_dongle *right;
 }	t_coder;
 
 typedef struct s_dongle
@@ -35,6 +42,7 @@ typedef struct s_dongle
 	int		id;
 	int		is_available;
 	long	available_at;
+	pthread_mutex_t	dongle_mutex;
 }	t_dongle;
 
 typedef struct s_simulation
@@ -49,7 +57,11 @@ typedef struct s_simulation
 int	    get_arguments(t_config *config, char **argv);
 int	    get_scheduler(const char *str, t_scheduler *scheduler);
 int     parse_integer(const char *str, int *result, int allow_zero);
-void	set_config_fields(t_config *config, int **values);
-int		parse_numeric_arguments(t_config *config, char **argv);
+//void	set_config_fields(t_config *config, int **values);
+//static int		parse_numeric_arguments(t_config *config, char **argv);
+int 	init_simulation(t_config *config,t_simulation *init_values);
+int		init_coders(t_simulation *init_values);
+int		init_dongles(t_simulation *init_values);
+void	free_simulation(t_simulation *init_values);
 
 #endif
