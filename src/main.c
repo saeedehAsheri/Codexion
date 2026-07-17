@@ -28,19 +28,36 @@ int	main(int argc, char **argv)
 		printf("Error: simulation initialization failed.\n");
 		return(1);
 	}
+	if(!set_start_time(&init_values))
+	{
+		printf("Error: could not set start time.\n");
+		free_simulation(&init_values);
+		return(1);
+	}
 	printf("Simulation initialized successfully.\n");
 
-	for(int i = 0; i < init_values.config.number_of_coders; i++)
+	/*for(int i = 0; i < init_values.config.number_of_coders; i++)
 	{
 		printf("%d   ", init_values.coders[i].id);
 		printf("%d   ", init_values.coders[i].left->id);
 		printf("%d \n", init_values.coders[i].right->id);
-	}
+	}*/
 		
+	if(!create_threads(&init_values))
+	{
+		printf("Error: threads were not created.\n");
+		free_simulation(&init_values);
+		return (1);
+	}
+	if (!join_threads(&init_values))
+	{
+	printf("Error: could not join threads.\n");
 	free_simulation(&init_values);
-
+	return (1);
+	}	
 	/* start simulation */
 	/* wait for threads */
 	/* cleanup */
+	free_simulation(&init_values);
 	return (0);
 }

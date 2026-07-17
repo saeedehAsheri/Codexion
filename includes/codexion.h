@@ -5,10 +5,12 @@
 # include <stdio.h>
 # include <string.h>
 #include <stdlib.h>
+#include <sys/time.h>
 /*lib for having different running path in the program using threads*/
 # include <pthread.h>
 
 typedef struct s_dongle	t_dongle;
+typedef struct s_simulation t_simulation;
 
 typedef enum e_scheduler
 {
@@ -35,6 +37,8 @@ typedef struct s_coder
 	long	last_compile_start;
 	t_dongle *left;
 	t_dongle *right;
+	t_simulation	*simulation;
+	pthread_t	thread_id;
 }	t_coder;
 
 typedef struct s_dongle
@@ -63,5 +67,10 @@ int 	init_simulation(t_config *config,t_simulation *init_values);
 int		init_coders(t_simulation *init_values);
 int		init_dongles(t_simulation *init_values);
 void	free_simulation(t_simulation *init_values);
+long	get_time_ms(void);
+int		set_start_time(t_simulation *init_values);
+int		create_threads(t_simulation *simulation);
+int		join_threads(t_simulation *simulation);
+void	*coder_routine(void *argument);
 
 #endif
