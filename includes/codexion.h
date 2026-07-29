@@ -8,6 +8,7 @@
 #include <sys/time.h>
 /*lib for having different running path in the program using threads*/
 # include <pthread.h>
+# include <unistd.h>
 
 typedef struct s_dongle	t_dongle;
 typedef struct s_simulation t_simulation;
@@ -44,18 +45,20 @@ typedef struct s_coder
 typedef struct s_dongle
 {
 	int		id;
-	int		is_available;
+	//int		is_available;
 	long	available_at;
 	pthread_mutex_t	dongle_mutex;
 }	t_dongle;
 
 typedef struct s_simulation
 {
-	t_config	config;
-	t_coder		*coders;
-	t_dongle	*dongles;
-	long		start_time;
-	int			is_finished;
+	t_config		config;
+	t_coder			*coders;
+	t_dongle		*dongles;
+	long			start_time;
+	int				is_finished;
+	pthread_mutex_t	print_mutex;
+	int				print_mutex_initialized;
 }	t_simulation;
 
 int	    get_arguments(t_config *config, char **argv);

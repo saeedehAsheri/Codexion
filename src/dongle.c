@@ -25,7 +25,7 @@ int	init_dongles(t_simulation *init_values)
     while(i < count)
     {
         init_values->dongles[i].id = i + 1;
-        init_values->dongles[i].is_available = 1;
+        //init_values->dongles[i].is_available = 1;
         init_values->dongles[i].available_at = 0;
         if(pthread_mutex_init(&init_values->dongles[i].dongle_mutex, NULL) != 0)
         {
