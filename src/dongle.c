@@ -39,3 +39,32 @@ int	init_dongles(t_simulation *init_values)
 
     return(1);
 }
+
+void	lock_dongle(t_coder *coder, t_dongle *dongle)
+{
+	long	current_time;
+	long	wait_time;
+
+	while (1)
+	{
+		pthread_mutex_lock(&dongle->dongle_mutex);
+		current_time = get_time_ms();
+		if (current_time >= dongle->available_at)
+		{
+			print_status(coder, "has taken a dongle");
+			return ;
+		}
+		wait_time = dongle->available_at - current_time;
+		pthread_mutex_unlock(&dongle->dongle_mutex);
+		if (wait_time > 0)
+			sleep_ms(wait_time);
+	}
+}
+
+void	unlock_dongle(t_coder *coder, t_dongle *dongle)
+{
+	dongle->available_at = get_time_ms()
+		+ coder->simulation->config.dongle_cooldown;
+	//dongle->is_available = 0;
+	pthread_mutex_unlock(&dongle->dongle_mutex);
+}

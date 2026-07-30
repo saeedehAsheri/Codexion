@@ -1,46 +1,50 @@
 #include "../includes/codexion.h"
 
-void	cleanup_dongles(t_simulation *simulation)
+static void	init_simulation_values(t_config *config,
+		t_simulation *simulation)
 {
-	int	i;
-
-	if (!simulation || !simulation->dongles)
-		return ;
-	i = 0;
-	while (i < simulation->config.number_of_coders)
-	{
-		pthread_mutex_destroy(
-			&simulation->dongles[i].dongle_mutex);
-		i++;
-	}
-	free(simulation->dongles);
+	simulation->config = *config;
+	simulation->coders = NULL;
 	simulation->dongles = NULL;
+	simulation->start_time = 0;
+	simulation->is_finished = 0;
+	simulation->print_mutex_initialized = 0;
+	simulation->state_mutex_initialized = 0;
 }
 
-int	init_simulation(t_config *input_config, t_simulation *init_values)
+static int	init_simulation_mutexes(t_simulation *simulation)
 {
-	if (!input_config || !init_values)
+	if (pthread_mutex_init(&simulation->print_mutex, NULL) != 0)
 		return (0);
-	init_values->coders = NULL;
-	init_values->dongles = NULL;
-	init_values->config = *input_config;
-	init_values->is_finished = 0;
-	init_values->start_time = 0;
-	init_values->print_mutex_initialized = 0;
-	if (!init_dongles(init_values))
-		return (0);
-	if (!init_coders(init_values))
+	simulation->print_mutex_initialized = 1;
+	if (pthread_mutex_init(&simulation->state_mutex, NULL) != 0)
 	{
-		cleanup_dongles(init_values);
+		pthread_mutex_destroy(&simulation->print_mutex);
+		simulation->print_mutex_initialized = 0;
 		return (0);
 	}
-	if (pthread_mutex_init(&init_values->print_mutex, NULL) != 0)
+	simulation->state_mutex_initialized = 1;
+	return (1);
+}
+
+int	init_simulation(t_config *config, t_simulation *simulation)
+{
+	if (!config || !simulation)
+		return (0);
+	init_simulation_values(config, simulation);
+	if (!init_dongles(simulation))
+		return (0);
+	if (!init_coders(simulation))
 	{
-		free(init_values->coders);
-		init_values->coders = NULL;
-		cleanup_dongles(init_values);
+		cleanup_dongles(simulation);
 		return (0);
 	}
-	init_values->print_mutex_initialized = 1;
+	if (!init_simulation_mutexes(simulation))
+	{
+		free(simulation->coders);
+		simulation->coders = NULL;
+		cleanup_dongles(simulation);
+		return (0);
+	}
 	return (1);
 }

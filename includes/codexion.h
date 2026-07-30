@@ -58,7 +58,9 @@ typedef struct s_simulation
 	long			start_time;
 	int				is_finished;
 	pthread_mutex_t	print_mutex;
+	pthread_mutex_t	state_mutex;
 	int				print_mutex_initialized;
+	int				state_mutex_initialized;
 }	t_simulation;
 
 int	    get_arguments(t_config *config, char **argv);
@@ -75,5 +77,16 @@ int		set_start_time(t_simulation *init_values);
 int		create_threads(t_simulation *simulation);
 int		join_threads(t_simulation *simulation);
 void	*coder_routine(void *argument);
+void	print_status(t_coder *coder, const char *message);
+void	sleep_ms(long milliseconds);
+void	lock_dongle(t_coder *coder, t_dongle *dongle);
+void	unlock_dongle(t_coder *coder, t_dongle *dongle);
+void	cleanup_dongles(t_simulation *simulation);
+void	run_compile(t_coder *coder);
+void	run_debug(t_coder *coder);
+void	run_refactor(t_coder *coder);
+void	update_compile_start(t_coder *coder);
+void	increment_compile_count(t_coder *coder);
+int		get_compile_count(t_coder *coder);
 
 #endif

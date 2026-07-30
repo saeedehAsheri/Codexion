@@ -29,3 +29,8 @@ int	set_start_time(t_simulation *init_values)
 	}
 	return (1);
 }
+
+void	sleep_ms(long milliseconds)
+{
+	usleep((unsigned int)milliseconds * 1000);
+}
