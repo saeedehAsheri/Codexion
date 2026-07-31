@@ -10,6 +10,7 @@ static void	init_simulation_values(t_config *config,
 	simulation->is_finished = 0;
 	simulation->print_mutex_initialized = 0;
 	simulation->state_mutex_initialized = 0;
+	simulation->monitor_created = 0;
 }
 
 static int	init_simulation_mutexes(t_simulation *simulation)

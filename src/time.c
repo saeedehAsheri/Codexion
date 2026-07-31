@@ -34,3 +34,34 @@ void	sleep_ms(long milliseconds)
 {
 	usleep((unsigned int)milliseconds * 1000);
 }
+
+int	set_simulation_start(t_simulation *simulation)
+{
+	int	i;
+
+	simulation->start_time = get_time_ms();
+	if (simulation->start_time < 0)
+		return (0);
+	i = 0;
+	while (i < simulation->config.number_of_coders)
+	{
+		simulation->coders[i].last_compile_start
+			= simulation->start_time;
+		i++;
+	}
+	return (1);
+}
+
+int	interruptible_sleep(t_simulation *simulation, long duration)
+{
+	long	end_time;
+
+	end_time = get_time_ms() + duration;
+	while (get_time_ms() < end_time)
+	{
+		if (simulation_is_finished(simulation))
+			return (0);
+		usleep(500);
+	}
+	return (1);
+}

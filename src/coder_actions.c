@@ -1,21 +1,26 @@
 #include "../includes/codexion.h"
 
-void	run_compile(t_coder *coder)
+int	run_compile(t_coder *coder)
 {
 	update_compile_start(coder);
 	print_status(coder, "is compiling");
-	sleep_ms(coder->simulation->config.time_to_compile);
+	if (!interruptible_sleep(coder->simulation,
+			coder->simulation->config.time_to_compile))
+		return (0);
 	increment_compile_count(coder);
+	return (1);
 }
 
-void	run_debug(t_coder *coder)
+int	run_debug(t_coder *coder)
 {
 	print_status(coder, "is debugging");
-	sleep_ms(coder->simulation->config.time_to_debug);
+	return (interruptible_sleep(coder->simulation,
+			coder->simulation->config.time_to_debug));
 }
 
-void	run_refactor(t_coder *coder)
+int	run_refactor(t_coder *coder)
 {
 	print_status(coder, "is refactoring");
-	sleep_ms(coder->simulation->config.time_to_refactor);
+	return (interruptible_sleep(coder->simulation,
+			coder->simulation->config.time_to_refactor));
 }

@@ -21,24 +21,37 @@ static void	run_cycles(t_coder *coder,
 	int	required;
 
 	required = coder->simulation->config.number_of_compiles_required;
-	while (get_compile_count(coder) < required)
+	while (!simulation_is_finished(coder->simulation)
+		&& get_compile_count(coder) < required)
 	{
-		lock_dongle(coder, first);
-		lock_dongle(coder, second);
-		run_compile(coder);
+		if (!lock_dongle(coder, first))
+			break ;
+		if (!lock_dongle(coder, second))
+		{
+			unlock_dongle(coder, first);
+			break ;
+		}
+		if (!run_compile(coder))
+		{
+			unlock_dongle(coder, second);
+			unlock_dongle(coder, first);
+			break ;
+		}
 		unlock_dongle(coder, second);
 		unlock_dongle(coder, first);
 		if (get_compile_count(coder) >= required)
 			break ;
-		run_debug(coder);
-		run_refactor(coder);
+		if (!run_debug(coder) || !run_refactor(coder))
+			break ;
 	}
 }
 
 static void	run_single_coder(t_coder *coder)
 {
-	lock_dongle(coder, coder->left);
-	print_status(coder, "has only one dongle and cannot compile");
+	if (!lock_dongle(coder, coder->left))
+		return ;
+	while (!simulation_is_finished(coder->simulation))
+		usleep(500);
 	unlock_dongle(coder, coder->left);
 }
 

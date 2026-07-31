@@ -10,11 +10,11 @@ codexion/
 │   ├── init.c *
 │   ├── simulation.c *
 │   ├── coder.c *
-│   ├── monitor.c
+│   ├── monitor.c*
 │   ├── dongle.c *
 │   ├── scheduler.c
 │   ├── heap.c
-│   ├── logging.c
+│   ├── logging.c*
 │   ├── time.c*
 │   ├── cleanup.c *
 │   └── utils.c
