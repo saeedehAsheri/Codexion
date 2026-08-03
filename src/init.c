@@ -11,6 +11,11 @@ static void	init_simulation_values(t_config *config,
 	simulation->print_mutex_initialized = 0;
 	simulation->state_mutex_initialized = 0;
 	simulation->monitor_created = 0;
+	simulation->scheduler_queue.heap = NULL;
+	simulation->scheduler_queue.size = 0;
+	simulation->scheduler_queue.capacity = 0;
+	simulation->scheduler_queue.mutex_initialized = 0;
+	simulation->scheduler_queue.condition_initialized = 0;
 }
 
 static int	init_simulation_mutexes(t_simulation *simulation)
@@ -45,6 +50,11 @@ int	init_simulation(t_config *config, t_simulation *simulation)
 		free(simulation->coders);
 		simulation->coders = NULL;
 		cleanup_dongles(simulation);
+		return (0);
+	}
+	if (!init_scheduler(simulation))
+	{
+		free_simulation(simulation);
 		return (0);
 	}
 	return (1);
