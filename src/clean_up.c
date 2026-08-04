@@ -21,6 +21,7 @@ void	free_simulation(t_simulation *simulation)
 {
 	if (!simulation)
 		return ;
+	destroy_scheduler(simulation);
 	if (simulation->state_mutex_initialized)
 	{
 		pthread_mutex_destroy(&simulation->state_mutex);

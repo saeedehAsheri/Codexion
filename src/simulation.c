@@ -14,7 +14,23 @@ static void	set_dongle_order(t_coder *coder,
 		*second = coder->left;
 	}
 }
-
+int	take_compile_dongles(t_coder *coder,
+		t_dongle *first, t_dongle *second)
+{
+	if (!lock_dongle(coder, first))
+	{
+		scheduler_release(coder->simulation);
+		return (0);
+	}
+	if (!lock_dongle(coder, second))
+	{
+		unlock_dongle(coder, first);
+		scheduler_release(coder->simulation);
+		return (0);
+	}
+	scheduler_release(coder->simulation);
+	return (1);
+}
 static void	run_cycles(t_coder *coder,
 		t_dongle *first, t_dongle *second)
 {
@@ -24,13 +40,10 @@ static void	run_cycles(t_coder *coder,
 	while (!simulation_is_finished(coder->simulation)
 		&& get_compile_count(coder) < required)
 	{
-		if (!lock_dongle(coder, first))
+		if (!scheduler_wait_turn(coder))
 			break ;
-		if (!lock_dongle(coder, second))
-		{
-			unlock_dongle(coder, first);
+		if (!take_compile_dongles(coder, first, second))
 			break ;
-		}
 		if (!run_compile(coder))
 		{
 			unlock_dongle(coder, second);

@@ -62,6 +62,7 @@ typedef struct s_scheduler_queue
 	t_request		*heap;
 	int				size;
 	int				capacity;
+	int				busy;
 	pthread_mutex_t	mutex;
 	pthread_cond_t	condition;
 	int				mutex_initialized;
@@ -132,6 +133,10 @@ void	heap_sift_up(t_simulation *simulation, int index);
 void	heap_sift_down(t_simulation *simulation, int index);
 int		heap_push(t_simulation *simulation, t_request request);
 int		heap_pop(t_simulation *simulation, t_request *request);
-
+int		scheduler_wait_turn(t_coder *coder);
+void	scheduler_wake_all(t_simulation *simulation);
+void	scheduler_release(t_simulation *simulation);
+int	take_compile_dongles(t_coder *coder,
+		t_dongle *first, t_dongle *second);
 
 #endif
